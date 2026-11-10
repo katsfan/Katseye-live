@@ -1,0 +1,20 @@
+KATSEYE LIVE — publicação no Netlify
+
+1. Extraia TODO o conteúdo deste ZIP.
+2. Envie todos os arquivos e pastas para o repositório GitHub.
+   A estrutura deve manter:
+   - index.html
+   - mapa-setores-brookhaven.png
+   - netlify/functions/tickets.mjs
+   - netlify.toml
+   - package.json
+3. No Netlify, importe o repositório GitHub.
+4. Publish directory: . (ou deixe o valor detectado pelo netlify.toml).
+5. Aguarde o deploy e teste uma reserva.
+
+IMPORTANTE:
+- O limite de 25 é controlado por uma Netlify Function e Netlify Blobs.
+- Não publique apenas o HTML nem arraste somente o ZIP para hospedagem estática.
+- O contador simples pode não ser adequado para picos simultâneos de acessos; teste antes do evento.
+- Este formulário registra solicitações de reserva; não processa pagamentos de Robux.
+- Não coloque senhas, códigos ou dados pessoais sensíveis no formulário.

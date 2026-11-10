@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KATSEYE LIVE • Ingressos</title>
+<style>
+:root{--pink:#ff62b6;--purple:#9b63ff;--bg:#10091d;--panel:#1d1230;--muted:#c9badb}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 20% 0%,#43205e 0,#10091d 45%);color:#fff;font-family:system-ui,-apple-system,Arial,sans-serif}
+main{max-width:900px;margin:auto;padding:28px 16px 60px}.hero{text-align:center;padding:34px 16px}
+.tag{display:inline-block;border:1px solid #a96bff;border-radius:99px;padding:6px 13px;color:#ffd1ed;font-size:12px;letter-spacing:2px}
+h1{font-size:clamp(38px,8vw,68px);line-height:1;margin:18px 0 10px;background:linear-gradient(90deg,#ff79c8,#c49aff);color:transparent;background-clip:text}
+p{color:var(--muted);line-height:1.55}.panel{background:#1d1230eF;border:1px solid #593b79;border-radius:22px;padding:22px;margin:18px 0;box-shadow:0 15px 45px #0005}
+h2{margin-top:0;color:#ffd0ed}.prices{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.price{background:#29183e;border:1px solid #69458b;border-radius:16px;padding:16px}.price strong{display:block;font-size:23px;color:#ff8dce}
+img{width:100%;height:auto;border-radius:14px;border:1px solid #62447e}
+label{display:block;margin:13px 0 6px;color:#f6dff0;font-weight:600}input,select,textarea{width:100%;padding:13px;border-radius:11px;border:1px solid #76528f;background:#10091d;color:#fff;font:inherit}
+button{width:100%;border:0;border-radius:13px;padding:15px;margin-top:18px;background:linear-gradient(90deg,#ff5eae,#9864ff);color:white;font-size:17px;font-weight:800}
+small{color:#cbb8dc}.notice{border-left:4px solid var(--pink);padding:10px 14px;background:#2a183d;border-radius:8px}
+#status{font-weight:800;text-align:center;margin-top:15px}.sold{display:none;text-align:center;padding:35px 15px;border:1px solid #ff62b6;border-radius:20px;background:#32132d}
+footer{text-align:center;color:#9f8eaf;font-size:12px;margin-top:28px}
+</style></head>
+<body><main>
+<header class="hero"><span class="tag">EVENTO DE FÃS • ROBLOX</span><h1>KATSEYE LIVE</h1><p>Prepare-se para viver esse show no Brookhaven! 💜</p></header>
+<section class="panel"><h2>🎟️ Escolha seu ingresso</h2>
+<div class="prices">
+<div class="price"><strong>GRÁTIS</strong>Ingresso geral • acesso à área geral</div>
+<div class="price"><strong>10 Robux</strong>VIP • acesso VIP para um show</div>
+<div class="price"><strong>20 Robux</strong>VIP • acesso VIP para dois shows</div>
+</div>
+<p class="notice">As datas e os horários serão anunciados pela organização. Os shows podem acontecer de terça a domingo, mas não são semanais nem têm frequência fixa.</p>
+</section>
+<section class="panel"><h2>🗺️ Mapa dos setores</h2><p>Confira o mapa e escolha seu setor no formulário.</p><img src="mapa-setores-brookhaven.png" alt="Mapa original do Brookhaven com identificação dos setores A1, A2, A3, B1, B2, VIP e Arquibancada"></section>
+<section class="panel" id="booking"><h2>✨ Reservar ingresso</h2>
+<div id="formArea"><form id="ticketForm">
+<label>Usuário do Roblox</label><input name="roblox" required maxlength="30" placeholder="Seu usuário">
+<label>TikTok (@)</label><input name="tiktok" maxlength="40" placeholder="@seuusuario">
+<label>Outro contato (opcional)</label><input name="contact" maxlength="100" placeholder="Como a organização pode falar com você?">
+<label>Show / data anunciada</label><input name="show" required maxlength="80" placeholder="Informe o show ou a data divulgada">
+<label>Tipo de ingresso</label><select name="ticket" required><option value="">Selecione</option><option>Geral grátis</option><option>VIP 10 Robux — um show</option><option>VIP 20 Robux — dois shows</option></select>
+<label>Setor</label><select name="sector" required><option value="">Selecione</option><option>A1</option><option>A2</option><option>A3</option><option>B1</option><option>B2</option><option>VIP</option><option>ARQUIBANCADA</option></select>
+<label>Observações (opcional)</label><textarea name="notes" rows="3" maxlength="300" placeholder="Escreva aqui"></textarea>
+<button type="submit">ENVIAR RESERVA</button></form></div>
+<div class="sold" id="sold"><h2>INGRESSOS ESGOTADOS</h2><p>O limite de 25 reservas foi atingido. Obrigado pelo carinho! 💗</p></div>
+<div id="status" role="status"></div><small>Limite total: 25 reservas. A reserva só será confirmada após a resposta do site.</small>
+</section><footer>KATSEYE LIVE • Evento de fãs no Roblox</footer>
+</main>
+<script>
+const form=document.getElementById('ticketForm'), statusBox=document.getElementById('status');
+async function checkSold(){try{const r=await fetch('/.netlify/functions/tickets');if(r.ok){const d=await r.json();if(d.soldOut){document.getElementById('formArea').style.display='none';document.getElementById('sold').style.display='block';}}}catch(e){}}
+form.addEventListener('submit',async e=>{e.preventDefault();statusBox.textContent='Enviando...';const data=Object.fromEntries(new FormData(form).entries());try{const r=await fetch('/.netlify/functions/tickets',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const result=await r.json();if(r.status===409){document.getElementById('formArea').style.display='none';document.getElementById('sold').style.display='block';statusBox.textContent='';return;}if(!r.ok)throw new Error(result.error||'Não foi possível reservar.');statusBox.textContent='Reserva recebida! A organização entrará em contato para confirmar. 💜';form.reset();if(result.soldOut){document.getElementById('formArea').style.display='none';document.getElementById('sold').style.display='block';}}catch(err){statusBox.textContent=err.message+' Tente novamente mais tarde.';}});
+checkSold();
+</script></body></html>
